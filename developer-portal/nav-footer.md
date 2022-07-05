@@ -9,7 +9,7 @@ Let's rename the link from training exercises to training program.
 ```yaml Before
 nav:
 
-  - label: Training exercises
+  - label: LAMI API Portal
     page: developer-portal/index.md
 
   - label: External docs

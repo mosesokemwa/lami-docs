@@ -1,0 +1,3627 @@
+{
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "Lami Web and Mobile API",
+    "title": "Lami Web and Mobile API",
+    "version": "2.0.0",
+    "license": {
+      "name": "PRIVATE",
+      "url": "https://www.lami.world/privacy-policy"
+    }
+  },
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "description": "lami dev",
+      "url": "https://dev.api.uhandisi.net"
+    }
+  ],
+  "paths": {
+    "/api/v2/auth/token": {
+      "post": {
+        "tags": [
+          "Clients",
+          "ImaliPay",
+          "Andela",
+          "Daily Apps",
+          "TaiPlus",
+          "Tugende",
+          "JetStream",
+          "Equity Bank (Kenya) Limited",
+          "Vodacom DRC"
+        ],
+        "description": "Get Lami API Token",
+        "operationId": "getToken",
+        "summary": "Get Lami API Token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "client_id": {
+                    "type": "string"
+                  },
+                  "client_secret": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "access_token": {
+                          "type": "string",
+                          "description": "Lami API Token"
+                        },
+                        "expires_in": {
+                          "type": "number",
+                          "description": "Token expiration time"
+                        },
+                        "token_type": {
+                          "type": "string",
+                          "description": "Token type"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "client_id and client_secret are required!"
+          }
+        }
+      }
+    },
+    "/api/v2/billing/payment": {
+      "post": {
+        "tags": [
+          "Billing"
+        ],
+        "description": "Submit Payment",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "operationId": "submitPayment",
+        "summary": "Submit Payment",
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "invoice_id": 33,
+                  "payment": {
+                    "payment_method_type_id": 1,
+                    "phone_number": "254723496470"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information submitted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/billing/payment/callback": {
+      "post": {
+        "tags": [
+          "Billing"
+        ],
+        "description": "MPESA CallBack",
+        "operationId": "mpesaCallBack",
+        "summary": "MPESA CallBack",
+        "parameters": [
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "Body": {
+                    "stkCallback": {
+                      "MerchantRequestID": "42432-25088312-1",
+                      "CheckoutRequestID": "ws_CO_26042021164546769399",
+                      "ResultCode": 0,
+                      "ResultDesc": "The service request is processed successfully.",
+                      "CallbackMetadata": {
+                        "Item": [
+                          {
+                            "Name": "Amount",
+                            "Value": 10
+                          },
+                          {
+                            "Name": "MpesaReceiptNumber",
+                            "Value": "PDN96F6WTB"
+                          },
+                          {
+                            "Name": "Balance"
+                          },
+                          {
+                            "Name": "TransactionDate",
+                            "Value": 20210423234155
+                          },
+                          {
+                            "Name": "PhoneNumber",
+                            "Value": 254722401784
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information submitted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/billing/payment/{invoice_id}/status": {
+      "get": {
+        "tags": [
+          "Billing"
+        ],
+        "description": "Check payment status",
+        "operationId": "checkPaymentStatus",
+        "summary": "Check payment status",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "invoice_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Billing"
+        ],
+        "description": "Change payment status",
+        "operationId": "changePaymentStatus",
+        "summary": "Change payment status",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "invoice_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "invoice_status_type": "paid"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/claims": {
+      "get": {
+        "tags": [
+          "Claims",
+          "Clients"
+        ],
+        "description": "List Claims",
+        "operationId": "listClaims",
+        "summary": "List Claims",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/claims/tenant": {
+      "get": {
+        "tags": [
+          "Claims",
+          "Clients"
+        ],
+        "description": "List All Claims By Tenant (as in dashboard)",
+        "operationId": "listClaimsByTenant",
+        "summary": "List All Claims By Tenant (as in dashboard)",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/claims/{claim_id}": {
+      "get": {
+        "tags": [
+          "Claims",
+          "Clients"
+        ],
+        "description": "Claim Details",
+        "operationId": "getClaim",
+        "summary": "Claim Details",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "claim_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Claims",
+          "Clients"
+        ],
+        "description": "Edit Claim Status",
+        "operationId": "editClaimStatus",
+        "summary": "Edit Claim Status",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "claim_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "status": "APPROVED",
+                  "processedAt": "2021-12-24T08:54:11.859Z",
+                  "processedIn": "3 weeks",
+                  "processedBy": "admin@cic.co.ke",
+                  "comment": "https://mbima.impactgroup.holdings:4436/OAF-Dashboard",
+                  "review": "Reviewed",
+                  "reviewedBy": "admin@oaf.com",
+                  "reviewedAt": "2021-12-17T14:44:43.984Z",
+                  "paid": "TRUE",
+                  "amount": "0",
+                  "paymentId": "Payment ID not set",
+                  "modifiedAt": "2021-12-24T08:54:11.890Z"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/claims/types": {
+      "get": {
+        "tags": [
+          "Claims"
+        ],
+        "description": "List Claims Types",
+        "operationId": "listClaimsTypes",
+        "summary": "List Claims Types",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product_category_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agreement_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/claims/add": {
+      "post": {
+        "tags": [
+          "Claims",
+          "Clients"
+        ],
+        "description": "Add Claim",
+        "operationId": "addClaim",
+        "summary": "Add Claim",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "agreement_id": 630,
+                  "claim_type_id": 1,
+                  "claim_amount": 0,
+                  "incident_date": "2021-03-20",
+                  "incident_description": "On Friday afternoon, ....",
+                  "damage_description": "On Friday afternoon, ....",
+                  "garage_address": "Some street address",
+                  "id_number": 1234,
+                  "id_document": "xFd4Tss",
+                  "driver_licence_document": "276763",
+                  "kra_pin": "",
+                  "claim_template": [
+                    {
+                      "field_name": "field_name",
+                      "field_label": "field label",
+                      "field_type": "text"
+                    },
+                    {
+                      "field_name": "field_name_2",
+                      "field_label": "field name 2",
+                      "field_type": "document"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/cms/upload/signature": {
+      "post": {
+        "tags": [
+          "CMS"
+        ],
+        "description": "Get a signed URL to upload a file",
+        "operationId": "getSignedUrl",
+        "summary": "Get a signed URL to upload a file",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "filename": "file.extention",
+                  "document_type_id": 2
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/cms/document/association": {
+      "patch": {
+        "tags": [
+          "CMS"
+        ],
+        "description": "Associate a document (to a policy providing agreement_id or policy_number or to a user proving email)",
+        "operationId": "associateDocument",
+        "summary": "Associate a document (to a policy providing agreement_id or policy_number or to a user proving email)",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "document_id": "jHnchhHhja",
+                  "agreement_id": 1780,
+                  "document_type_id": 2
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/cms/documents/types": {
+      "get": {
+        "tags": [
+          "CMS"
+        ],
+        "description": "List Documents Types",
+        "operationId": "listDocumentTypes",
+        "summary": "List Documents Types",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/cms/document/{document_id}": {
+      "get": {
+        "tags": [
+          "CMS"
+        ],
+        "description": "Get Document URL",
+        "operationId": "getDocumentUrl",
+        "summary": "Get Document URL",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/cms/document/{document_id}/download": {
+      "get": {
+        "tags": [
+          "CMS"
+        ],
+        "description": "Download Document",
+        "operationId": "downloadDocument",
+        "summary": "Download Document",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/cms/document/upload": {
+      "post": {
+        "tags": [
+          "CMS"
+        ],
+        "description": "Upload file",
+        "operationId": "uploadFile",
+        "summary": "Upload file",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "uploadURL": {
+                    "type": "string",
+                    "required": [
+                      "true"
+                    ]
+                  },
+                  "document": {
+                    "type": "string",
+                    "required": [
+                      "true"
+                    ],
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/instalment/options": {
+      "get": {
+        "tags": [
+          "Instalment"
+        ],
+        "description": "List Instalment Options",
+        "operationId": "listInstalmentOptions",
+        "summary": "List Instalment Options",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "policy_period_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "product_type_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/instalment/{instalment_option_type_id}/details": {
+      "get": {
+        "tags": [
+          "Instalment"
+        ],
+        "description": "Instalment Option details",
+        "operationId": "listInstalmentOptionsDetails",
+        "summary": "Instalment Option details",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "instalment_option_type_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "invoice_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/instalment/payment": {
+      "post": {
+        "tags": [
+          "Instalment"
+        ],
+        "description": "Submit Instalment Payment",
+        "operationId": "submitInstalmentPayment",
+        "summary": "Submit Instalment Payment",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "invoice_id": 33,
+                  "amount": 4500,
+                  "instalment_option_type_id": 2,
+                  "instalment_rank_id": 3,
+                  "payment": {
+                    "payment_method_type_id": 1,
+                    "phone_number": "254723496470"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information submitted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/instalment/payment/callback": {
+      "post": {
+        "tags": [
+          "Instalment"
+        ],
+        "description": "MPESA CallBack",
+        "operationId": "mpesaCallback",
+        "summary": "MPESA CallBack",
+        "parameters": [
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "Body": {
+                    "stkCallback": {
+                      "MerchantRequestID": "42432-25088312-1",
+                      "CheckoutRequestID": "ws_CO_26042021164546769399",
+                      "ResultCode": 0,
+                      "ResultDesc": "The service request is processed successfully.",
+                      "CallbackMetadata": {
+                        "Item": [
+                          {
+                            "Name": "Amount",
+                            "Value": 10
+                          },
+                          {
+                            "Name": "MpesaReceiptNumber",
+                            "Value": "PDN96F6WTB"
+                          },
+                          {
+                            "Name": "Balance"
+                          },
+                          {
+                            "Name": "TransactionDate",
+                            "Value": 20210423234155
+                          },
+                          {
+                            "Name": "PhoneNumber",
+                            "Value": 254722401784
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information submitted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/integrations/partners/sendy": {
+      "post": {
+        "tags": [
+          "Integrations",
+          "Clients"
+        ],
+        "description": "Partners one endpoint call flow - SENDY",
+        "operationId": "partnersSendy",
+        "summary": "Partners one endpoint call flow - SENDY",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "user": {
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "john@mail.com",
+                    "phone_number": "+225712345678",
+                    "tax_pin_number": "A123456789A"
+                  },
+                  "asset": {
+                    "liability_limit": "5000000",
+                    "currency": "KSH",
+                    "goods_value": "",
+                    "goods_type": "Containers",
+                    "vehicle_registration_number": "KCA 123A",
+                    "make": "",
+                    "model": ""
+                  },
+                  "cover": {
+                    "from_date": "2021-08-04T13:32:07.6",
+                    "end_date": "2022-09-04T13:32:07.6",
+                    "origin": "ICD",
+                    "destination": "Juba"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/integrations/partners/lipalater": {
+      "post": {
+        "tags": [
+          "Integrations",
+          "Clients"
+        ],
+        "description": "Partners one endpoint call flow - LIPALATER",
+        "operationId": "partnersLipalater",
+        "summary": "Partners one endpoint call flow - LIPALATER",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "user": {
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "john@mail.com",
+                    "phone_number": "+225712345678",
+                    "kra_pin": "A123456789A",
+                    "id_number": "0000000"
+                  },
+                  "kyc": {
+                    "purchase_date": "2021-08-04T13:32:07.6",
+                    "purchase_price": "50000.000 ksh",
+                    "make": "",
+                    "model": "",
+                    "serial_number": ""
+                  },
+                  "cover": {
+                    "from_date": "2021-08-04T13:32:07.6",
+                    "end_date": "2022-09-04T13:32:07.6",
+                    "product_id": 225
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/integrations/partners/imalipay": {
+      "post": {
+        "tags": [
+          "Integrations",
+          "Clients",
+          "ImaliPay"
+        ],
+        "description": "Partners one endpoint call flow - IMALIPAY",
+        "operationId": "partnersImaliPay",
+        "summary": "Partners one endpoint call flow - IMALIPAY",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "user": {
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "john@mail.com",
+                    "phone_number": "+225712345678",
+                    "kra_pin": "A123456789A",
+                    "id_number": "0000000",
+                    "gender": "",
+                    "date_of_birth": "1983-07-02",
+                    "postal_address": ""
+                  },
+                  "asset": {
+                    "pin_number": ""
+                  },
+                  "next_kin": {
+                    "next_kin_name": "Jane Doe",
+                    "next_kin_number": "76543456",
+                    "next_kin_id_number": "4567890000",
+                    "next_kin_postal_address": "P.O BOX 233",
+                    "next_kin_relationship": "Daughter"
+                  },
+                  "beneficiary": {
+                    "beneficiary_name": "Jane Doe",
+                    "beneficiary_id_number": "99876543",
+                    "beneficiary_number": "+2273456543",
+                    "beneficiary_postal_address": "P.O BOX 43",
+                    "beneficiary_relationship": "Sister"
+                  },
+                  "cover": {
+                    "from_date": "2021-08-04T13:32:07.6",
+                    "end_date": "2022-09-04T13:32:07.6",
+                    "product_id": 272
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/integrations/partners/andela": {
+      "post": {
+        "tags": [
+          "Integrations",
+          "Clients",
+          "Andela"
+        ],
+        "description": "Partners one endpoint call flow - ANDELA",
+        "operationId": "partnersAndela",
+        "summary": "Partners one endpoint call flow - ANDELA",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "user": {
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "john@mail.com",
+                    "phone_number": "+225712345678",
+                    "country": "Kenya"
+                  },
+                  "kyc": {
+                    "pin_number": "7983983",
+                    "id_number": "0000000",
+                    "gender": "F"
+                  },
+                  "cover": {
+                    "from_date": "2021-08-04T13:32:07.6",
+                    "end_date": "2022-09-04T13:32:07.6",
+                    "product_id": 270
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/integrations/partners/oaf/policy": {
+      "post": {
+        "tags": [
+          "Integrations",
+          "Clients"
+        ],
+        "description": "Partners one endpoint call flow - OAF Policy",
+        "operationId": "partnersOafPolicy",
+        "summary": "Partners one endpoint call flow - OAF Policy",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": [
+                  {
+                    "FirstName": "Ndaona",
+                    "LastName": "Doe",
+                    "SeasonName": "2022, Long Rain",
+                    "DistrictName": "Zomba",
+                    "SiteName": "Bimbi B",
+                    "GroupName": "Limbikani",
+                    "OAFID": "12515",
+                    "NationalID": "JN5RN8F8",
+                    "BirthYear": "1964",
+                    "DateOfBirth": "1964-12-16 22:00:00",
+                    "Gender": "m",
+                    "GlobalClientID": "91f0d31f-7573-e711-bfee-acb57d5d594c",
+                    "BeneficiaryLastName": "Twaya",
+                    "BeneficiaryFirstName": "Ashatu",
+                    "BeneficiaryNationalID": "Wht7xws2",
+                    "BeneficiaryBirthYear": "1998",
+                    "CoinsuredRelationship": ""
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/integrations/partners/oaf/claims": {
+      "post": {
+        "tags": [
+          "Integrations",
+          "Clients"
+        ],
+        "description": "Partners one endpoint call flow - OAF Claims",
+        "operationId": "partnersOafClaims",
+        "summary": "Partners one endpoint call flow - OAF Claims",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": [
+                  {
+                    "NationalID": "MM5RN8F8",
+                    "OAFID": "1004500014",
+                    "claimPrincipalFuneral": "TRUE",
+                    "claimBeneficiaryFuneral": "FALSE",
+                    "file": "https://oaf-claims.s3.amazonaws.com/undefined-1638777220366.pdf",
+                    "status": "APPROVED",
+                    "processedAt": "2021-12-24T08:54:11.859Z",
+                    "processedIn": "3 weeks",
+                    "processedBy": "admin@cic.co.ke",
+                    "comment": "https://mbima.impactgroup.holdings:4436/OAF-Dashboard",
+                    "review": "Reviewed",
+                    "reviewedBy": "admin@oaf.com",
+                    "reviewedAt": "2021-12-17T14:44:43.984Z",
+                    "paid": "TRUE",
+                    "amount": "0",
+                    "dateOfDeath": "2021-10-04T00:00:00.000Z",
+                    "receivedAt": "2021-11-29T00:00:00.000Z",
+                    "paymentId": "Payment ID not set",
+                    "createdAt": "2021-12-06T07:53:40.365Z",
+                    "modifiedAt": "2021-12-24T08:54:11.890Z"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/integrations/partners/oaf/ingestion": {
+      "post": {
+        "tags": [
+          "Integrations",
+          "Clients"
+        ],
+        "description": "Partners one endpoint call flow - OAF Ingestion",
+        "operationId": "partnersOafIngestion",
+        "summary": "Partners one endpoint call flow - OAF Ingestion",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "size": 50
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/integrations/partners/tai-plus": {
+      "post": {
+        "tags": [
+          "Integrations",
+          "Clients",
+          "TaiPlus"
+        ],
+        "description": "Partners one endpoint call flow - Tai Plus",
+        "operationId": "partnersTaiPlus",
+        "summary": "Partners one endpoint call flow - Tai Plus",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "user": {
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "john@mail.com",
+                    "phone_number": "+225712345678",
+                    "tax_pin_number": "A123456789A"
+                  },
+                  "asset": {
+                    "liability_limit": "5000000",
+                    "currency": "KSH",
+                    "goods_value": "",
+                    "goods_type": "Containers",
+                    "vehicle_registration_number": "KCA 123A",
+                    "make": "",
+                    "model": "",
+                    "pin_number": "",
+                    "transporter_name": "",
+                    "description": ""
+                  },
+                  "cover": {
+                    "from_date": "2021-08-04T13:32:07.6",
+                    "end_date": "2022-09-04T13:32:07.6",
+                    "origin": "ICD",
+                    "destination": "Juba"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/integrations/partners/tugende": {
+      "post": {
+        "tags": [
+          "Integrations",
+          "Clients",
+          "Tugende"
+        ],
+        "description": "Partners one endpoint call flow - Tugende",
+        "operationId": "partnersTugende",
+        "summary": "Partners one endpoint call flow - Tugende",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "user": {
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "john@mail.com",
+                    "phone_number": "+225712345678",
+                    "tax_pin_number": "A123456789A",
+                    "gender": "male",
+                    "date_of_birth": "1983-07-02",
+                    "postal_address": "P.O BOX 12",
+                    "identity_number": "23456789"
+                  },
+                  "asset": {
+                    "liability_limit": "5000000",
+                    "currency": "KSH",
+                    "goods_value": "",
+                    "goods_type": "Containers",
+                    "vehicle_registration_number": "KCA 123A",
+                    "make": "",
+                    "model": "",
+                    "pin_number": "3288832V"
+                  },
+                  "cover": {
+                    "from_date": "2022-08-04T13:32:07.6",
+                    "end_date": "2022-09-04T13:32:07.6"
+                  },
+                  "beneficiary": {
+                    "beneficiary_name": "Jane Doe",
+                    "beneficiary_id_number": "99876543",
+                    "beneficiary_number": "+2273456543",
+                    "beneficiary_postal_address": "P.O BOX 43",
+                    "beneficiary_relationship": "Sister"
+                  },
+                  "next_kin": {
+                    "next_of_kin_name": "Jane Doe",
+                    "next_kin_number": "76543456",
+                    "next_kin_id_number": "4567890000",
+                    "next_kin_postal_address": "P.O BOX 233",
+                    "next_kin_relationship": "Daughter"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/integrations/partners/daily-apps": {
+      "post": {
+        "tags": [
+          "Integrations",
+          "Clients",
+          "Daily Apps"
+        ],
+        "description": "Partners one endpoint call flow - Daily Apps",
+        "operationId": "partnersDailyApps",
+        "summary": "Partners one endpoint call flow - Daily Apps",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "user": {
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "john@mail.com",
+                    "phone_number": "+225712345678",
+                    "tax_pin_number": "A123456789A"
+                  },
+                  "asset": {
+                    "liability_limit": "5000000",
+                    "currency": "KSH",
+                    "goods_value": "",
+                    "goods_type": "Containers",
+                    "vehicle_registration_number": "KCA 123A",
+                    "make": "",
+                    "model": "",
+                    "pin_number": "",
+                    "transporter_name": "",
+                    "description": ""
+                  },
+                  "cover": {
+                    "from_date": "2021-08-04T13:32:07.6",
+                    "end_date": "2022-09-04T13:32:07.6",
+                    "origin": "ICD",
+                    "destination": "Juba"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/integrations/partners/jetstream": {
+      "post": {
+        "tags": [
+          "Integrations",
+          "Clients",
+          "JetStream"
+        ],
+        "description": "Partners one endpoint call flow - JETSTREAM",
+        "operationId": "partnersJetStream",
+        "summary": "Partners one endpoint call flow - JETSTREAM",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "user": {
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "john@mail.com",
+                    "phone_number": "+225712345678",
+                    "tax_pin_number": "A123456789A"
+                  },
+                  "asset": {
+                    "pin_number": 100,
+                    "transporter_name": "transporter name",
+                    "currency": "KSH",
+                    "goods_type": "Containers",
+                    "vehicle_registration_number": "KCA 123A"
+                  },
+                  "cover": {
+                    "from_date": "2021-08-04T13:32:07.6",
+                    "end_date": "2022-09-04T13:32:07.6",
+                    "origin": "ICD",
+                    "destination": "Juba"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/integrations/partners/vodacom": {
+      "post": {
+        "tags": [
+          "Integrations",
+          "Clients",
+          "Vodacom DRC"
+        ],
+        "description": "Partners one endpoint call flow - Vodacom DRC / Smart applications",
+        "operationId": "partnersVodacom",
+        "summary": "Partners one endpoint call flow - Vodacom DRC / Smart applications",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "user": {
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "john@mail.com",
+                    "id_number": "0000000",
+                    "date_of_birth": "1983-07-02",
+                    "postal_address": ""
+                  },
+                  "asset": {
+                    "vehicle_registration_number": "KCA 123A"
+                  },
+                  "cover": {
+                    "from_date": "2021-08-04T13:32:07.6",
+                    "end_date": "2022-09-04T13:32:07.6"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/policy/policies": {
+      "get": {
+        "tags": [
+          "Policies"
+        ],
+        "description": "List policies",
+        "operationId": "listPolicies",
+        "summary": "List policies",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Policies"
+        ],
+        "description": "Create policies",
+        "operationId": "createPolicies",
+        "summary": "Create policies",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "quote_id": "2124",
+                  "from_date": "2021-04-25T13:32:07.6",
+                  "end_date": "2022-04-25T13:32:07.6"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Policies",
+          "Clients"
+        ],
+        "description": "Update policy",
+        "operationId": "updatePolicy",
+        "summary": "Update policy",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "policy_number": "XD2HDKS23SD",
+                  "end_date": "2021-04-25T13:32:07.6"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/policy/{agreement_id}": {
+      "get": {
+        "tags": [
+          "Policies"
+        ],
+        "description": "List policies by agreement_id",
+        "operationId": "listPoliciesByAgreementID",
+        "summary": "List policies",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agreement_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/products/list": {
+      "get": {
+        "tags": [
+          "Products",
+          "Clients",
+          "ImaliPay",
+          "JetStream",
+          "Tugende"
+        ],
+        "description": "List Products",
+        "operationId": "listProducts",
+        "summary": "List Products",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "loan_value",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "car_value",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "benefit_amount",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "insured_asset_type_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "product_category_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "insurance_product_type_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "insurance_type_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "insured_asset_usage_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/products/{product_id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "Product Details",
+        "operationId": "productDetails",
+        "summary": "Product Details",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/products/coverages/{product_id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "List Product Coverages",
+        "operationId": "listProductCoverages",
+        "summary": "List Product Coverages",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/products/price": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "description": "Calculate Prices",
+        "operationId": "calculatePrice",
+        "summary": "Calculate Prices",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "car_value": 1010101,
+                  "benefit_amount": 1010101,
+                  "registration_plate": "TOP010",
+                  "car_model": "A4",
+                  "car_brand": "Audi",
+                  "product_id": 9,
+                  "coverages": [
+                    {
+                      "factor_description": "FACTOR_VARIABLE_CAR_ENTERTAINMENT_AMOUNT",
+                      "insurance_rate_id": 8,
+                      "value": 30000,
+                      "coverage_type_id": 8,
+                      "coverage_level_id": 12,
+                      "application_question_id": 14,
+                      "questions": null
+                    },
+                    {
+                      "factor_description": "FACTOR_VARIABLE_WINDSCREEN_AMOUNT",
+                      "insurance_rate_id": 6,
+                      "value": 30000,
+                      "coverage_type_id": 11,
+                      "coverage_level_id": 13,
+                      "application_question_id": 13,
+                      "questions": null
+                    },
+                    {
+                      "factor_description": "FACTOR_FIXED_RATE_BASED_ON_COVERAGE_AMOUNT",
+                      "insurance_rate_id": 14,
+                      "value": 1,
+                      "coverage_type_id": 9,
+                      "coverage_level_id": 18,
+                      "application_question_id": null,
+                      "questions": null
+                    },
+                    {
+                      "factor_description": "FACTOR_FIXED_COVERAGE_RATE",
+                      "insurance_rate_id": 9,
+                      "value": 1,
+                      "coverage_type_id": 10,
+                      "coverage_level_id": 17,
+                      "application_question_id": null,
+                      "questions": null
+                    },
+                    {
+                      "factor_description": "FACTOR_EXCESS",
+                      "insurance_rate_id": 10,
+                      "value": 1,
+                      "coverage_type_id": 12,
+                      "coverage_level_id": 16,
+                      "application_question_id": null,
+                      "questions": null
+                    },
+                    {
+                      "factor_description": "FACTOR_FIXED_PRICE",
+                      "insurance_rate_id": 11,
+                      "value": 1,
+                      "coverage_type_id": 13,
+                      "coverage_level_id": 22,
+                      "application_question_id": null,
+                      "questions": null
+                    },
+                    {
+                      "factor_description": "FACTOR_FIXED_PRICE",
+                      "insurance_rate_id": 15,
+                      "value": 1,
+                      "coverage_type_id": 28,
+                      "coverage_level_id": 45,
+                      "application_question_id": null,
+                      "questions": null
+                    }
+                  ],
+                  "questions": null
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/products/insurance/types": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "List Insurance Types",
+        "operationId": "listInsuranceTypes",
+        "summary": "List Insurance Types",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/products/asset/types": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "List Asset Types",
+        "operationId": "listAssetTypes",
+        "summary": "List Asset Types",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product_category_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "insurance_type_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/products/asset/usage": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "List Asset Usages",
+        "operationId": "listAssetUsages",
+        "summary": "List Asset Usages",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product_category_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "insurance_type_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "insured_asset_type_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/products/categories": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "List Products Categories",
+        "operationId": "listProductsCategories",
+        "summary": "List Products Categories",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "insurance_type_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/products/types": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "List Products Types",
+        "operationId": "listProductsTypes",
+        "summary": "List Products Types",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "insured_asset_type_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "product_category_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "insured_asset_usage_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "insurance_type_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/questions/model/{model_type}": {
+      "get": {
+        "tags": [
+          "Questions"
+        ],
+        "description": "List Questions By Type",
+        "operationId": "listQuestionsByType",
+        "summary": "List Questions By Type",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "model_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/questions": {
+      "get": {
+        "tags": [
+          "Questions"
+        ],
+        "description": "List Questions",
+        "operationId": "listQuestions",
+        "summary": "List Questions",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product_category_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "stage_type_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "insurance_product_type_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "insured_asset_usage_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "insured_asset_type_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Questions"
+        ],
+        "description": "Save Questions",
+        "operationId": "saveQuestions",
+        "summary": "Save Questions",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "quote_id": 1788,
+                  "agreement_id": 984,
+                  "claim_id": 263,
+                  "answers": [
+                    {
+                      "answer": "John",
+                      "key": "first_name",
+                      "application_question_id": 51
+                    },
+                    {
+                      "answer": "John",
+                      "key": "first_name",
+                      "application_question_id": 51
+                    },
+                    {
+                      "answer": "John",
+                      "key": "first_name",
+                      "application_question_id": 51
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/questions/answers": {
+      "get": {
+        "tags": [
+          "Questions"
+        ],
+        "description": "List Answers By Quote",
+        "operationId": "listAnswersByQuote",
+        "summary": "List Answers By Quote",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "quote_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/quotes/list": {
+      "get": {
+        "tags": [
+          "Quotes"
+        ],
+        "description": "List Quotes",
+        "operationId": "listQuotes",
+        "summary": "List Quotes",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/quotes/{quote_id}": {
+      "get": {
+        "tags": [
+          "Quotes"
+        ],
+        "description": "Get Quote details",
+        "operationId": "getQuote",
+        "summary": "Get Quote details",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "quote_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Quotes"
+        ],
+        "description": "Delete Quote",
+        "operationId": "deleteQuote",
+        "summary": "Delete Quote",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "quote_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/quotes": {
+      "post": {
+        "tags": [
+          "Quotes"
+        ],
+        "description": "Create Quote",
+        "operationId": "createQuote",
+        "summary": "Create Quote",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "car_value": 1010101,
+                  "registration_plate": "TOP010",
+                  "car_model": "A4",
+                  "car_brand": "Audi",
+                  "current_policy_expiry_date": "2021-04-25",
+                  "year_of_manufacture": 2016,
+                  "vehicle_usage": "Private",
+                  "product_id": 9,
+                  "coverages": [
+                    {
+                      "factor_description": "FACTOR_VARIABLE_CAR_ENTERTAINMENT_AMOUNT",
+                      "insurance_rate_id": 8,
+                      "value": 100000,
+                      "coverage_type_id": 8,
+                      "coverage_level_id": 12,
+                      "application_question_id": 14,
+                      "questions": null
+                    },
+                    {
+                      "factor_description": "FACTOR_VARIABLE_WINDSCREEN_AMOUNT",
+                      "insurance_rate_id": 6,
+                      "value": 80000,
+                      "coverage_type_id": 11,
+                      "coverage_level_id": 13,
+                      "application_question_id": 13,
+                      "questions": null
+                    },
+                    {
+                      "factor_description": "FACTOR_FIXED_RATE_BASED_ON_COVERAGE_AMOUNT",
+                      "insurance_rate_id": 14,
+                      "value": 1,
+                      "coverage_type_id": 9,
+                      "coverage_level_id": 18,
+                      "application_question_id": null,
+                      "questions": null
+                    },
+                    {
+                      "factor_description": "FACTOR_FIXED_COVERAGE_RATE",
+                      "insurance_rate_id": 9,
+                      "value": 1,
+                      "coverage_type_id": 10,
+                      "coverage_level_id": 17,
+                      "application_question_id": null,
+                      "questions": null
+                    },
+                    {
+                      "factor_description": "FACTOR_EXCESS",
+                      "insurance_rate_id": 10,
+                      "value": 1,
+                      "coverage_type_id": 12,
+                      "coverage_level_id": 16,
+                      "application_question_id": null,
+                      "questions": null
+                    },
+                    {
+                      "factor_description": "FACTOR_FIXED_PRICE",
+                      "insurance_rate_id": 11,
+                      "value": 1,
+                      "coverage_type_id": 13,
+                      "coverage_level_id": 22,
+                      "application_question_id": null,
+                      "questions": null
+                    },
+                    {
+                      "factor_description": "FACTOR_FIXED_PRICE",
+                      "insurance_rate_id": 15,
+                      "value": 1,
+                      "coverage_type_id": 28,
+                      "coverage_level_id": 45,
+                      "application_question_id": null,
+                      "questions": null
+                    }
+                  ],
+                  "questions": null
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/services/assets/motor/cars": {
+      "get": {
+        "tags": [
+          "Services"
+        ],
+        "description": "List Cars",
+        "operationId": "listCars",
+        "summary": "List Cars",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/services/valuation": {
+      "post": {
+        "tags": [
+          "Services"
+        ],
+        "description": "Submit Valuation Request",
+        "operationId": "submitValuationRequest",
+        "summary": "Submit Valuation Request",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "agreement_id": 1397,
+                  "date": "2021-04-26T17:21:35.332Z",
+                  "lat": "-1.306098517784301",
+                  "lon": "36.806850247085094"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information submitted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/services/stanbic/mail/send": {
+      "post": {
+        "tags": [
+          "Services"
+        ],
+        "description": "Send Email through Stanbic",
+        "operationId": "sendEmailStanbic",
+        "summary": "Send Email through Stanbic",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "mail@domain.com",
+                  "subject": "SUBJECT",
+                  "message": "MESSAGE"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information submitted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/services/rescue/sos": {
+      "post": {
+        "tags": [
+          "Services"
+        ],
+        "description": "Flare SOS Service",
+        "operationId": "flareSOS",
+        "summary": "Flare SOS Service",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "agreement_id": 1397,
+                  "latitude": "-1.3053414",
+                  "longitude": "36.8063316"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information submitted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/services/tools/regeneratesendypdf": {
+      "post": {
+        "tags": [
+          "Tools"
+        ],
+        "description": "Regenerate PDF covers - SENDY",
+        "operationId": "regenerateSendyPDF",
+        "summary": "Regenerate PDF covers - SENDY",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "policy_number",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information posted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/services/mvrsl": {
+      "post": {
+        "tags": [
+          "Services",
+          "Equity Bank (Kenya) Limited"
+        ],
+        "description": "Get insurance info from the NTSA API",
+        "summary":"Get Insurance from NTSA",
+        "operationId": "getInsuranceNTSA",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "policyNo": "string",
+                  "insuranceType": "string",
+                  "insuredPerson": "string",
+                  "registrationNo": "string",
+                  "validity": {
+                    "issueDate": "date",
+                    "expiryDate": "date"
+                  },
+                  "insurer": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/users/user/edit": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Update User",
+        "operationId": "updateUser",
+        "summary": "Update User",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "last_name": "Otae",
+                  "first_name": "Erick",
+                  "gender": "M",
+                  "email": "lamiqa003@hotmail.com",
+                  "address_1": null,
+                  "address_2": null,
+                  "kra_pin": "A111111111H",
+                  "citizenship": "Armenian",
+                  "identity_number": "24821520",
+                  "date_of_birth": "",
+                  "occupation": "ADVOCATE",
+                  "phone_number": "254799716826",
+                  "postal_address": "jzjsn",
+                  "postal_code": "00207",
+                  "town": null,
+                  "country": "Kenya",
+                  "marital_status": null,
+                  "employment_status": "No",
+                  "source_of_income": "Winnings (Lottery/Casino/Betting)",
+                  "job_industry": "FORESTRY AND FISHING",
+                  "is_iprs_verified": false
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/users/add": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Add User",
+        "operationId": "addUser",
+        "summary": "Add User",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "auth0_id": "auth0|608836df9c61c7006a254855",
+                  "email": "email@domain.com",
+                  "first_name": "Jhon",
+                  "last_name": "Smith",
+                  "phone_number": "+254111111"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/users/user": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get User",
+        "operationId": "getUser",
+        "summary": "Get User",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/users/user/edit/password": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Update User Password (Email)",
+        "operationId": "updateUserPassword",
+        "summary": "Update User Password (Email)",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information posted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/users/user/forgot/password": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Forgot User Password (Email)",
+        "operationId": "forgotPassword",
+        "summary": "Forgot User Password (Email)",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agent_auth",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "email@domain.com"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information posted succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/users/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Register User",
+        "operationId": "registerUser",
+        "summary": "Register User",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "john.doe@gmail.com",
+                  "phone_number": "+254111111",
+                  "first_name": "Jhon",
+                  "last_name": "Smith",
+                  "password": "Some?strong#password123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/v2/users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Login User",
+        "operationId": "loginUser",
+        "summary": "Login User",
+        "security": [
+          {
+            "ApiKeyAuth": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "john.doe@gmail.com",
+                  "password": "Some?strong#password123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information fetched succussfuly"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+
+  ]
+}

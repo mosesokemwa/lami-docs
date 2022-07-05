@@ -1,21 +1,22 @@
 meta:
-  title: Redocly Training
-  description: The best API documentation generator ever.
-  siteUrl: https://developer-portal-starter.redoc.ly
-  keywords: redocly developer portal, api portal starter, api reference docs
+  title: LAMI API's
+  description: The best API insurance Company.
+  siteUrl: https://lami.world
+  keywords: LAMI API developer portal, api portal starter, api reference docs
   lang: en-US
 linkChecker:
   severity: warning
   options:
     CheckExternal: false
 logo:
-  image: ./images/logo.png
-  altText: Redocly Training
+  image: ./images/lami.png
+  altText: LAMI API's
 toc:
   enable: true
 oasDefinitions:
   petstore: ./openapi/petstore.yaml
   # add links to definitions in our API registry by using a fully qualified URL.
+  lami: ./openapi/lami.yaml
 stylesheets:
   - https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=swap
   - https://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,600,700&display=swap
@@ -27,12 +28,12 @@ stylesheets:
 #  - ./static/intercom.js
 nav:
 
-  - label: Training exercises
+  - label: LAMI API Portal
     page: developer-portal/index.md
 
-  - label: External docs
-    icon: ./images/redocly-icon-white.png
-    href: https://redoc.ly/docs/developer-portal/introduction/
+  # - label: External docs
+  #   icon: ./images/redocly-icon-white.png
+  #   href: https://redoc.ly/docs/developer-portal/introduction/
 
   - search: true
 

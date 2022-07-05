@@ -1,7 +1,7 @@
 training:
   - page: developer-portal/index.md
-  - group: Training exercises
-    expanded: true
+  - group: LAMI API Portal
+    expanded: false
     pages:
       - label: Setup
         page: developer-portal/setup.md
@@ -38,7 +38,7 @@ training:
         page: developer-portal/mdx.mdx
       - label: Creating React components
         page: developer-portal/custom-component.mdx
-  - group: Petstore reference
+  - group: Lami API reference
     expanded: false
     pages:
       - page: openapi/reference.page.yaml/*
